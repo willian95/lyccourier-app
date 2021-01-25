@@ -1,0 +1,100 @@
+<ion-content>
+
+
+  <h1 class="header">REGISTRO</h1>
+
+  <ion-card class="form-card">
+  
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            
+            <ion-item>
+              <ion-label position="floating">Nombres</ion-label>
+              <ion-input type="text" [(ngModel)]="name"></ion-input>
+            </ion-item>
+            <div *ngIf="errors != null">
+              <small *ngIf="errors.hasOwnProperty('name')" style="color: #e74c3c">{{ errors['name'][0] }}</small>
+            </div>
+    
+          </ion-col>
+
+          <ion-col>
+
+            <ion-item>
+              <ion-label position="floating">Apellidos</ion-label>
+              <ion-input type="text" [(ngModel)]="lastname"></ion-input>
+            </ion-item>
+            <div *ngIf="errors != null">
+              <small *ngIf="errors.hasOwnProperty('lastname')" style="color: #e74c3c">{{ errors['lastname'][0] }}</small>
+            </div>
+
+          </ion-col>
+
+        </ion-row>
+
+      </ion-grid>
+      
+      <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" [(ngModel)]="email"></ion-input>
+      </ion-item>
+      <div *ngIf="errors != null">
+        <small *ngIf="errors.hasOwnProperty('email')" style="color: #e74c3c">{{ errors['email'][0] }}</small>
+      </div>
+
+      <ion-item>
+        <ion-label position="floating">Dirección</ion-label>
+        <ion-input type="text" [(ngModel)]="address"></ion-input>
+      </ion-item>
+      <div *ngIf="errors != null">
+        <small *ngIf="errors.hasOwnProperty('address')" style="color: #e74c3c">{{ errors['address'][0] }}</small>
+      </div>
+
+      <ion-grid>
+
+        <ion-row>
+
+          <ion-col>
+
+            <ion-item>
+              <ion-label position="floating">Clave</ion-label>
+              <ion-input type="password" [(ngModel)]="password"></ion-input>
+            </ion-item>
+            <div *ngIf="errors != null">
+              <small *ngIf="errors.hasOwnProperty('password')" style="color: #e74c3c">{{ errors['password'][0] }}</small>
+            </div>
+  
+          </ion-col>
+  
+          <ion-col>
+  
+            <ion-item>
+              <ion-label position="floating">Repetir clave</ion-label>
+              <ion-input type="password" [(ngModel)]="password_confirmation"></ion-input>
+            </ion-item>
+            <div *ngIf="errors != null">
+              <small *ngIf="errors.hasOwnProperty('password')" style="color: #e74c3c">{{ errors['password'][0] }}</small>
+            </div>
+  
+          </ion-col>
+
+        </ion-row>
+
+      </ion-grid>
+
+      <p class="text-center button-space">
+        <ion-button color="dark" (click)="register()">Regístrate</ion-button>
+      </p>
+
+      <p class="text-center">¿Ya tienes cuenta?</p>
+      <p class="text-center">
+        <ion-button color="secondary" fill="outline" (click)="login()">ingresa</ion-button>
+      </p>
+
+    </ion-card-content>
+  </ion-card>
+  
+
+</ion-content>

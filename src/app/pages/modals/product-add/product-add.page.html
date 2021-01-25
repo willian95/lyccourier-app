@@ -1,0 +1,36 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()"><ion-icon name="close-outline"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <h2 class="text-center">Añadir productos</h2>
+
+  <ion-item>
+    <ion-label position="floating">Producto</ion-label>
+    <ion-input [(ngModel)]="name"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Monto (USD)</ion-label>
+    <ion-input [(ngModel)]="price" type="number"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-button color="dark"  (click)="clickFileInput()">Agregar factura</ion-button>
+    <input type="file" style="display: none;" id="add-file-input" (change)="showPreview($event)" accept="file/* | image/* ">
+  </ion-item>
+  <ion-item *ngIf="imagePreview && imagePreview !== ''">
+    <img [src]="imagePreview" style="width: 40%;" *ngIf="fileType == 'image' || file_type == 'image'; else showIcon">
+    <ng-template #showIcon>
+      <ion-icon name="document-outline"></ion-icon>
+    </ng-template>
+  </ion-item>
+
+  <p class="text-center button-space">
+    <ion-button color="dark" (click)="returnProductInfo()"><span *ngIf="isEdit == true">Editar</span><span *ngIf="isEdit == false">Añadir</span></ion-button>
+  </p>
+
+</ion-content>

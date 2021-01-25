@@ -1,0 +1,83 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: #192a56; color: #fff;">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h1 class="header">CREAR ENVÍO</h1>
+
+  <ion-card class="form-card">
+  
+    <ion-card-content>
+      
+      <ion-item>
+        <ion-label position="floating">Tracking #</ion-label>
+        <ion-input [(ngModel)]="tracking"></ion-input>
+      </ion-item>
+      <div *ngIf="errors != null">
+        <small *ngIf="errors.hasOwnProperty('tracking')" style="color: #e74c3c">{{ errors['tracking'][0] }}</small>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Dirección</ion-label>
+        <ion-input [(ngModel)]="address"></ion-input>
+      </ion-item>
+      <div *ngIf="errors != null">
+        <small *ngIf="errors.hasOwnProperty('address')" style="color: #e74c3c">{{ errors['address'][0] }}</small>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Monto Total</ion-label>
+        <ion-input [(ngModel)]="total" readonly></ion-input>
+      </ion-item>
+      <small>Este monto cambiará a medida que añadas productos</small>
+
+      <p class="text-center button-space">
+        <ion-button color="dark" (click)="presentModal(null, false)">
+          <ion-icon name="add-outline"></ion-icon>
+        </ion-button>
+      </p>
+      
+      <ion-list>
+        <ion-item *ngFor="let product of products; let index = index;">
+          <ion-icon slot="start" name="cube-outline"></ion-icon>
+          <ion-label>
+            <h2>{{ product.name }}</h2>
+            <img [src]="product.image" alt="" style="width: 60px;" *ngIf="product.fileType == 'image'; else showIcon">
+
+            <ng-template #showIcon>
+              <ion-icon name="document-outline"></ion-icon>
+            </ng-template>
+
+          </ion-label>
+          <ion-label>
+            {{ product.price }} USD
+          </ion-label>
+          <ion-buttons slot="end">
+            <ion-button color="info" (click)="presentModal(product, true, index)">
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button color="danger" (click)="deleteProduct(index)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+
+      </ion-list>
+
+      <p class="text-center button-space">
+        <ion-button color="dark" (click)="store()">
+          Crear
+        </ion-button>
+      </p>
+
+      <div *ngIf="errors != null">
+        <small *ngIf="errors.hasOwnProperty('products')" style="color: #e74c3c">{{ errors['products'][0] }}</small>
+      </div>
+     
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+

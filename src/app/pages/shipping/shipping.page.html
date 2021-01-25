@@ -1,0 +1,47 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button menu="main-menu"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div style="padding-left: 10px; padding-right: 10px;">
+
+    <ion-card style="background-color: #192a56; padding-bottom: 15px; border-radius: 20px;">
+      <ion-card-header>
+        
+        <ion-grid>
+          <ion-row>
+            <ion-col size="8"><ion-card-title color="light">Tus envíos </ion-card-title></ion-col>
+            <ion-col size="4"><ion-icon routerLink="/shipping-create" style="color: #fff; float: right; font-size: 24px;" name="add-circle-outline"></ion-icon></ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <ion-item style="border-radius: 20px;">
+          <ion-input placeholder="Tracking #, Warehouse #" [(ngModel)]="query" (ionChange)="search()"></ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+
+    <ion-item *ngFor="let shipping of shippings" (click)="goToEdit(shipping)">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <h4>{{ shipping.tracking }}</h4>
+          </ion-col>
+          <ion-col v-if="shipping.shipped_at != '' || shipping.shipped_at != null">
+            <p style="text-align: right;">En espera de aprobación</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+
+
+  </div>
+</ion-content>
