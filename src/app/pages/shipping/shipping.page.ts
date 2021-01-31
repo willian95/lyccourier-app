@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UrlService } from '../../services/url.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { LoadingController} from '@ionic/angular';
+import { LoadingController, AlertController} from '@ionic/angular';
 import { AuthUserService } from '../../services/auth-user.service';
 import { Router, NavigationExtras  } from '@angular/router';
 
@@ -15,11 +15,22 @@ export class ShippingPage implements OnInit {
   url:any
   shippings:any
   loading:any
-  query:any
+  query:any = ""
+  pages:any
   page:any = 1
+  isShippingCreateAvailable:any = false
 
-  constructor(private urlService: UrlService, private http: HttpClient, public loadingController: LoadingController, private authUserService: AuthUserService, private router: Router) { 
+  constructor(private urlService: UrlService, private http: HttpClient, public loadingController: LoadingController, private authUserService: AuthUserService, private router: Router, public alertController: AlertController) { 
     this.url = this.urlService.getUrl()
+    if(!this.authUserService.checkJWT()){
+      this.router.navigateByUrl("/")
+    }else{
+
+      let user = this.authUserService.getUser()
+      if(user.dni_picture != null){
+        this.isShippingCreateAvailable = true
+      }
+    }
   }
 
   ionViewDidEnter(){
@@ -49,6 +60,7 @@ export class ShippingPage implements OnInit {
       }).subscribe((res:any) =>{
   
         this.shippings = res.shippings
+        this.pages = Math.ceil(res.shippingsCount / res.dataAmount)
   
       })
 
@@ -58,25 +70,38 @@ export class ShippingPage implements OnInit {
 
   fetch(page = 1){
 
-    this.presentLoading()
+    this.page = page
 
-    let headers = new HttpHeaders({
-      Authorization: "Bearer "+window.localStorage.getItem('token'),
-    });
+    if(this.query == ""){
 
-    this.http.get(this.url+"/clients/shipping/fetch/"+page, {
-      headers
-    }).subscribe((res:any) =>{
+      this.presentLoading()
 
-      this.loadingDismiss()
-      this.shippings = res.shippings
+      let headers = new HttpHeaders({
+        Authorization: "Bearer "+window.localStorage.getItem('token'),
+      });
 
-    },
-    (errorResponse: HttpErrorResponse) => {
-      
-      this.loadingDismiss()
+      this.http.get(this.url+"/clients/shipping/fetch/"+page, {
+        headers
+      }).subscribe((res:any) =>{
 
-    })
+        this.loadingDismiss()
+        this.shippings = res.shippings
+        this.pages = Math.ceil(res.shippingsCount / res.dataAmount)
+
+      },
+      (errorResponse: HttpErrorResponse) => {
+        
+        this.loadingDismiss()
+
+      })
+
+    }else{
+
+      this.search()
+
+    }
+
+    
 
   }
 
@@ -98,21 +123,64 @@ export class ShippingPage implements OnInit {
 
   }
 
-  goToEdit(shipping){
-    
+  selectShipping(shipping){
+
     if(shipping.shipped_at == null || shipping.shipped_at == ""){
-
-      let navigationExtras: NavigationExtras = {
-        state: {
-          shipping: shipping
-        }
-      };
-
-      console.log("extras", navigationExtras)
-      this.router.navigate(["shipping-edit"], navigationExtras)
-
+      this.goToEdit(shipping)
+    }else{
+      this.goToDetail(shipping)
     }
 
+  }
+
+  goToEdit(shipping){
+
+    let navigationExtras: NavigationExtras = {
+      state: {
+        shipping: shipping
+      }
+    };
+
+    this.router.navigate(["shipping-edit"], navigationExtras)
+
+  }
+
+  goToDetail(shipping){
+
+    let navigationExtras: NavigationExtras = {
+      state: {
+        shipping: shipping
+      }
+    };
+
+    this.router.navigate(["shipping-detail"], navigationExtras)
+
+  }
+
+  goToShippingCreate(){
+
+    if(this.isShippingCreateAvailable){
+        this.router.navigateByUrl("/shipping-create")
+    }else{
+      this.presentAlert("Debes completar todos tus datos para crear un envío")
+    }
+
+  }
+
+  async presentAlert(message, success = false) {
+    const alert = await this.alertController.create({
+      message: message,
+      buttons: [ 
+        {
+          text: 'Ok!',
+          handler: () => {
+            
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
 }

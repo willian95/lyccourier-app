@@ -27,12 +27,13 @@ export class ProductAddPage implements OnInit {
   }
 
   ionViewDidEnter(){
+    console.log("product", this.product)
     if(this.product){
       this.name = this.product.product ? this.product.product : this.product.name
       this.price = this.product.price
       this.imagePreview = this.product.image
       this.base64Image = this.product.image
-      this.fileType = this.product.fileType ? this.product.filType : this.product.file_type
+      this.fileType = this.product.fileType ? this.product.fileType : this.product.file_type
     }
   }
 

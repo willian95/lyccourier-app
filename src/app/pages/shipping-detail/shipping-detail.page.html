@@ -15,15 +15,12 @@
       <h1 class="text-center">Status</h1>
 
       <ion-list>
-        <ion-item>
-          <ion-label><strong>Delivery</strong></ion-label>
+        <ion-item *ngFor="let status of shipping.shipping_histories?.slice()?.reverse(); let i = index">
+          <ion-label *ngIf="i== 0"><strong >{{ status.shipping_status.name }}</strong></ion-label>
+          <ion-label *ngIf="i > 0">{{ status.shipping_status.name }}</ion-label>
+          <label>{{ dateFormat(status.created_at) }}</label>
         </ion-item>
-        <ion-item>
-          <ion-label style="font-size: 14px;">Lima (en tránstio)</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label style="font-size: 14px;">Miami</ion-label>
-        </ion-item>
+
       </ion-list>
 
       <h1 class="text-center">Origen</h1>
@@ -33,24 +30,20 @@
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Warehouse #</ion-label>
-        <ion-input readonly>000945678</ion-input>
+        <ion-input readonly>{{ shipping.warehouse_number }}</ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Fecha de creación</ion-label>
-        <ion-input readonly>13/12/2020</ion-input>
+        <ion-input readonly>{{ dateFormat(shipping.created_at) }}</ion-input>
       </ion-item>
       <h1 class="text-center">Destino</h1>
       <ion-item>
         <ion-label position="stacked">Nombre</ion-label>
-        <ion-input readonly>Willian Rodríguez</ion-input>
+        <ion-input readonly>{{ shipping.client.name }}</ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
-        <ion-input readonly>rodriguezwillian95@gmail.com</ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Teléfono</ion-label>
-        <ion-input readonly>+58 412 1081638</ion-input>
+        <ion-input readonly>{{ shipping.client.email }}</ion-input>
       </ion-item>
 
      

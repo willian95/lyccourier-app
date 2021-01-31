@@ -43,6 +43,10 @@ const routes: Routes = [
     path: 'shipping-edit',
     loadChildren: () => import('./pages/shipping-edit/shipping-edit.module').then( m => m.ShippingEditPageModule)
   },
+  {
+    path: 'forgot-password',
+    loadChildren: () => import('./pages/forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule)
+  },
 ];
 
 @NgModule({

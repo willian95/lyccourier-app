@@ -15,7 +15,9 @@
         <ion-grid>
           <ion-row>
             <ion-col size="8"><ion-card-title color="light">Tus envíos </ion-card-title></ion-col>
-            <ion-col size="4"><ion-icon routerLink="/shipping-create" style="color: #fff; float: right; font-size: 24px;" name="add-circle-outline"></ion-icon></ion-col>
+            <ion-col size="4">
+              <ion-icon (click)="goToShippingCreate()" style="color: #fff; float: right; font-size: 30px;" name="add-circle-outline"></ion-icon>
+            </ion-col>
           </ion-row>
         </ion-grid>
       </ion-card-header>
@@ -28,20 +30,32 @@
     </ion-card>
 
 
-    <ion-item *ngFor="let shipping of shippings" (click)="goToEdit(shipping)">
+    <ion-item *ngFor="let shipping of shippings" (click)="selectShipping(shipping)">
       <ion-grid>
         <ion-row>
           <ion-col>
             <h4>{{ shipping.tracking }}</h4>
           </ion-col>
-          <ion-col v-if="shipping.shipped_at != '' || shipping.shipped_at != null">
+          <ion-col *ngIf="shipping.shipped_at == '' || shipping.shipped_at == null; else showStatus">
             <p style="text-align: right;">En espera de aprobación</p>
           </ion-col>
+          <ng-template #showStatus>
+            <p style="text-align: right; margin-top: 24px;">{{ shipping.shipping_status.name }}</p>
+          </ng-template>
         </ion-row>
       </ion-grid>
     </ion-item>
 
-
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-icon name="arrow-back-outline" style="font-size: 30px;" *ngIf="page > 1" (click)="fetch(page - 1)"></ion-icon>
+        </ion-col>
+        <ion-col class="ion-text-right">
+          <ion-icon *ngIf="page < pages" name="arrow-forward-outline" style="font-size: 30px;" (click)="fetch(page + 1)"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
   </div>
 </ion-content>

@@ -5,40 +5,30 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { LoadingController, AlertController} from '@ionic/angular';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
+  selector: 'app-forgot-password',
+  templateUrl: './forgot-password.page.html',
+  styleUrls: ['./forgot-password.page.scss'],
 })
-export class RegisterPage implements OnInit {
+export class ForgotPasswordPage implements OnInit {
 
   url:any
-  name:any
-  lastname:any
   email:any
-  address:any
-  password:any
-  password_confirmation:any
-  loading:any
   errors:any
+  loading:any
 
-  constructor(private router: Router, private urlService: UrlService, private http: HttpClient, public loadingController: LoadingController, public alertController: AlertController) { 
+  constructor(private router: Router, private urlService: UrlService, private http: HttpClient, public loadingController: LoadingController, public alertController: AlertController) {
     this.url = this.urlService.getUrl()
   }
 
   ngOnInit() {
   }
 
-  register(){
-
+  restore(){
+    
     this.presentLoading()
 
-    this.http.post(this.url+"/register", {
-      "name":this.name,
-      "lastname":this.lastname,
-      "email": this.email,
-      "address":this.address,
-      "password":this.password,
-      "password_confirmation":this.password_confirmation
+    this.http.post(this.url+"/password/verify", {
+      "email": this.email
     }).subscribe((res:any) =>{
 
       this.loadingDismiss()
@@ -64,7 +54,7 @@ export class RegisterPage implements OnInit {
           text: 'Ok!',
           handler: () => {
             if(success == true){
-              this.router.navigateByUrl("/login")
+              this.goToLogin()
             }
           }
         }
@@ -72,6 +62,10 @@ export class RegisterPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  goToLogin(){
+    this.router.navigateByUrl("/login")
   }
 
   showValidationErrors(errorResponse){
@@ -82,7 +76,6 @@ export class RegisterPage implements OnInit {
         this.presentAlert("Hay algunos campos que debe revisar", false)
         this.errors = errorResponse.error.errors
         
-  
       }
   
     }
@@ -95,10 +88,6 @@ export class RegisterPage implements OnInit {
 
   loadingDismiss(){
     this.loading.dismiss()
-  }
-
-  login(){
-    this.router.navigateByUrl("/login")
   }
 
 }

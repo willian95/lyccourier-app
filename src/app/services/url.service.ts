@@ -9,8 +9,8 @@ export class UrlService {
   }
 
   getUrl(){
-    return "http://localhost:8000/api";
-    //return "https://servertest.sytes.net/buscoabogado/public";
+    //return "http://localhost:8000/api";
+    return "https://servertest.sytes.net/lycCourier/public/api";
   }
 
 }

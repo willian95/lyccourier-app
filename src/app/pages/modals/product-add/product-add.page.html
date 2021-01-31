@@ -23,7 +23,7 @@
     <input type="file" style="display: none;" id="add-file-input" (change)="showPreview($event)" accept="file/* | image/* ">
   </ion-item>
   <ion-item *ngIf="imagePreview && imagePreview !== ''">
-    <img [src]="imagePreview" style="width: 40%;" *ngIf="fileType == 'image' || file_type == 'image'; else showIcon">
+    <img [src]="imagePreview" style="width: 40%;" *ngIf="fileType == 'image'; else showIcon">
     <ng-template #showIcon>
       <ion-icon name="document-outline"></ion-icon>
     </ng-template>

@@ -3,6 +3,7 @@ import { AuthUserService } from '../../services/auth-user.service';
 import { UrlService } from '../../services/url.service';
 import { AlertController,LoadingController } from '@ionic/angular';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { ObservableService } from '../../services/observable.service';
 import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
@@ -190,7 +191,7 @@ export class ProfilePage implements OnInit {
         
         this.presentAlert("Perfil actualizado")
         this.loadingDismiss()
-        this.storeUserData(this.user)
+        this.storeUserData(res.user)
 
       }, (errorResponse: HttpErrorResponse) => {
       
@@ -286,6 +287,7 @@ export class ProfilePage implements OnInit {
   loadingDismiss(){
     this.loading.dismiss()
   }
+
 
 
 }
