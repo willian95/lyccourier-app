@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx'
 
 @Component({
   selector: 'app-root',
@@ -31,6 +31,18 @@ export class AppComponent {
 
   }
 
+  goToShippingCreate(){
+
+    this.router.navigateByUrl("shipping-create")
+
+  }
+
+  goToShipping(){
+
+    this.router.navigateByUrl("shippings")
+
+  }
+
   logout(){
     localStorage.removeItem("token")
     localStorage.removeItem("user")
@@ -39,4 +51,5 @@ export class AppComponent {
 
   }
 
+  
 }

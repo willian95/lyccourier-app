@@ -10,16 +10,16 @@
       <ion-list>
         
         <ion-menu-toggle>
-          <ion-item routerLink="/shipping">
-            <ion-icon name="rocket-outline" slot="start"></ion-icon>
-            <ion-label>Envíos</ion-label>
+          <ion-item (click)="goToShippingCreate()">
+            <ion-icon name="send-outline" slot="start"></ion-icon>
+            <ion-label>Crear envío</ion-label>
           </ion-item>
         </ion-menu-toggle>
 
         <ion-menu-toggle>
-          <ion-item routerLink="/profile">
-            <ion-icon name="person-circle-outline" slot="start"></ion-icon>
-            <ion-label>Perfil</ion-label>
+          <ion-item (click)="goToShipping()">
+            <ion-icon name="send-outline" slot="start"></ion-icon>
+            <ion-label>Listado envío</ion-label>
           </ion-item>
         </ion-menu-toggle>
 

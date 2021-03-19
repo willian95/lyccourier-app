@@ -29,6 +29,14 @@
     </ng-template>
   </ion-item>
 
+  <ion-item>
+    <ion-button color="dark"  (click)="clickImageProductInput()">Imagen del producto</ion-button>
+    <input type="file" style="display: none;" id="add-product-file-input" (change)="showProductPreview($event)" accept="image/* ">
+  </ion-item>
+  <ion-item *ngIf="productImagePreview && productImagePreview !== ''">
+    <img [src]="productImagePreview" style="width: 40%;">
+  </ion-item>
+
   <p class="text-center button-space">
     <ion-button color="dark" (click)="returnProductInfo()"><span *ngIf="isEdit == true">Editar</span><span *ngIf="isEdit == false">Añadir</span></ion-button>
   </p>

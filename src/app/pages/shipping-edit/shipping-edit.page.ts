@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { UrlService } from '../../services/url.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { ModalController, AlertController,LoadingController } from '@ionic/angular';
+import { AlertController,LoadingController, ModalController } from '@ionic/angular';
+import { Router, ActivatedRoute  } from '@angular/router';
+import {DomSanitizer} from '@angular/platform-browser';
+
 import { ProductAddPage } from '../modals//product-add/product-add.page';
+import { ClientAddPage } from '../modals//client-add/client-add.page';
 
 @Component({
   selector: 'app-shipping-edit',
@@ -12,51 +15,288 @@ import { ProductAddPage } from '../modals//product-add/product-add.page';
 })
 export class ShippingEditPage implements OnInit {
 
-  id:any
-  address:""
-  tracking:""
-  total:number=0
-  products:any = []
   url:any
-  loading:any
+
+  shippingId:any = null
+  departments:any = []
+  provinces:any = []
+  districts:any = []
+  recipientList:any = []
+  resellersList:any = []
+  resellers:any = null
+  boxes:any = []
+  products:any = []
+  total:number = 0
+  loading:any = null
+  description:any = null
+  pieces:number = null
+  length:number = null
+  height:number = null
+  width:number = null
+  weight:number = null
+  address:any = null
   errors:any = []
+  clientDni:any = null
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private urlService: UrlService, public alertController: AlertController, private http: HttpClient, public loadingController: LoadingController, private modalController: ModalController) {
+  tracking:string = null
+  recipientQuery:any = null
+  recipientId:any = null
+  showRecipientList:boolean = false
+  selectedDepartment:any = null
+  selectedProvince:any = null
+  selectedDistrict:any = null
+  selectedReseller:any = null
+  selectedBox:any = null
+  dni_picture:any = null
+  dni_picture_back:any = null
+  base64ImageFront:any = null
+  base64ImageBack:any = null
 
+  constructor(private urlService: UrlService, private http: HttpClient, private sanitizer:DomSanitizer, public alertController: AlertController, public loadingController: LoadingController, private modalController: ModalController, private router: Router, private activatedRoute: ActivatedRoute) { 
     this.url = this.urlService.getUrl()
+
+
     this.activatedRoute.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
-        let shipping = this.router.getCurrentNavigation().extras.state.shipping;
+        let shipping = this.router.getCurrentNavigation().extras.state.shipping
         this.setValues(shipping)
+
       }
       
     });
+  }
+
+  ngOnInit() {
+
+    this.getAllResellers()
+    this.getBoxes()
 
   }
 
   setValues(shipping){
-    this.id = shipping.id
-    this.address = shipping.address
+  
+    this.shippingId = shipping.id
     this.tracking = shipping.tracking
+    this.dni_picture = shipping.client.dni_picture
+    this.dni_picture_back = shipping.client.dni_picture_back
+    this.description = shipping.description
+    this.clientDni = shipping.client.dni
+    this.selectedDepartment = shipping.client.department_id
+    this.selectedProvince = shipping.client.province_id
+    this.selectedDistrict = shipping.client.district_id
+    this.address = shipping.address
+    this.pieces = shipping.pieces
+    this.selectedBox = shipping.box_id
+    this.length = shipping.length
+    this.height = shipping.height
+    this.width = shipping.width
+    this.weight = shipping.weight
     this.products = shipping.shipping_products
+    this.recipientQuery = shipping.client.name+" "+shipping.client.lastname
+    this.recipientId = shipping.client_id 
 
-    this.calculateProductTotal()
+    this.getRecipientReseller()
+    this.getDepartments()
+    this.getProvinces()
+    this.getDistricts()
+    this.getBoxes()
 
   }
 
-  calculateProductTotal(){
-    this.total = 0
-    this.products.forEach(product => this.total += product.price)
+  clickFileInput(side){
+
+    document.getElementById("add-file-input-"+side).click()
 
   }
 
-  async presentLoading() {
-    this.loading = await this.loadingController.create({});
-    this.loading.present();
+  setRecipient(recipient){
+
+    this.recipientId = recipient.id
+    this.recipientQuery = recipient.name+" "+recipient.lastname
+    this.showRecipientList = false
+
+    this.selectedReseller = null
+    this.getRecipientReseller()
+
+    this.selectedDepartment = recipient.department_id
+    this.selectedProvince = recipient.province_id
+    this.selectedDistrict = recipient.district_id
+
+    this.getDistricts()
+
+    this.dni_picture = recipient.dni_picture
+    this.dni_picture_back = recipient.dni_picture_back
+
   }
 
-  loadingDismiss(){
-    this.loading.dismiss()
+  recipientSearch(){
+
+    let headers = new HttpHeaders({
+      Authorization: "Bearer "+window.localStorage.getItem('token'),
+    });
+
+    this.http.post(this.url+"/recipients/search", {
+      "search": this.recipientQuery,
+    }, {headers}).subscribe((res:any) =>{
+
+      this.recipientList = res.recipients
+      this.showRecipientList = true
+
+    })
+
+  }
+
+  getDepartments(){
+
+    this.http.get(this.url+"/departments").subscribe((res:any) =>{
+
+      this.departments = res.departments
+
+    })
+
+  }
+
+  getProvinces(){
+
+    this.http.get(this.url+"/provinces/"+this.selectedDepartment).subscribe((res:any) =>{
+
+      this.provinces = res.provinces
+
+    })
+
+  }
+
+  getDistricts(){
+
+    this.http.get(this.url+"/districts/"+this.selectedDepartment+"/"+this.selectedProvince).subscribe((res:any) =>{
+
+      this.districts = res.districts
+      
+
+    })
+
+  }
+
+  getAllResellers(){
+
+    this.resellers = null
+    let headers = new HttpHeaders({
+      Authorization: "Bearer "+window.localStorage.getItem('token'),
+    });
+
+    this.http.get(this.url+"/resellers/all", {headers}).subscribe((res:any) =>{
+
+      this.resellersList = res.resellers
+
+    })
+
+  }
+
+  getRecipientReseller(){
+
+    let headers = new HttpHeaders({
+      Authorization: "Bearer "+window.localStorage.getItem('token'),
+    });
+
+    this.http.get(this.url+"/recipients/resellers/"+this.recipientId, {headers}).subscribe((res:any) =>{
+
+      if(res.reseller != null){
+        this.resellers = res.reseller
+        this.selectedReseller = this.resellers.id
+      }else{
+        this.getAllResellers()
+      }
+      
+
+    })
+
+  }
+
+  getBoxes(){
+
+    let headers = new HttpHeaders({
+      Authorization: "Bearer "+window.localStorage.getItem('token'),
+    });
+
+    this.http.get(this.url+"/box/all", {headers}).subscribe((res:any) =>{
+      
+      this.boxes = res.boxes
+
+    })
+
+  }
+
+  showPreview(event, side) {
+
+    let file: File = event.target.files[0];
+    
+    if(this.validateFile(file)){
+
+      let imageUrl = URL.createObjectURL(file);
+      var myReader: FileReader = new FileReader();
+
+      if(side == 'front'){
+
+        this.dni_picture = this.sanitize(imageUrl)
+      
+      }else{
+
+        this.dni_picture_back = this.sanitize(imageUrl)
+
+      }
+
+      myReader.onloadend = (e) => {
+
+        if(side == 'front'){
+          this.base64ImageFront = myReader.result;
+        }else{
+          this.base64ImageBack = myReader.result;
+        }
+
+        
+      }
+      myReader.readAsDataURL(file);
+
+    }
+
+  }
+
+  validateFile(file){
+    let fileType = file['type'].split('/')[0]
+
+    if(fileType == "image"){
+      return true
+    }
+
+    this.dni_picture = ""
+    this.dni_picture_back = ""
+
+    this.presentAlert("Debes subir una imagen")
+    return false
+  }
+
+  sanitize(url:string){
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+  async presentAlert(message, success = false) {
+    const alert = await this.alertController.create({
+      message: message,
+      buttons: [ 
+        {
+          text: 'Ok!',
+          handler: () => {
+
+            if(success == true){
+              this.router.navigateByUrl("/")
+            }
+
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async presentModal(product, isEdit, index) {
@@ -91,112 +331,81 @@ export class ShippingEditPage implements OnInit {
       if(product.hasOwnProperty("name") && product.hasOwnProperty("price") && product.hasOwnProperty("image")){
         return true
       }
+  
     }
 
     return false
   }
 
-  update(){
+  deleteProduct(index){
 
-    if(this.validateProductUpdate()){
-
-      this.presentLoading()
-
-      let headers = new HttpHeaders({
-        Authorization: "Bearer "+window.localStorage.getItem('token'),
-      });
-
-      this.http.post(this.url+"/clients/shipping/update", 
-        {
-          "id": this.id,
-          "tracking": this.tracking,
-          "address":this.address,
-          "products": this.products
-        },
-        {
-          headers
-        }
-      ).subscribe((res:any) =>{
-  
-        this.loadingDismiss()
-
-        this.presentAlert(res.msg, res.success)
-  
-      },
-      (errorResponse: HttpErrorResponse) => {
-        
-        this.loadingDismiss()
-  
-        this.showValidationErrors(errorResponse)
-        
-  
-      })
-
-
-    }
-
+    this.products.splice(index, 1)
+    //this.calculateProductTotal()
+ 
   }
 
-  validateProductUpdate(){
+  updateProduct(product, index){
 
-    if(this.products.length == 0){
-      this.presentAlert("Debes añadir productos para continuar")
-      return false
-    }
-    
-    else if(this.tracking == "" || this.tracking == null){
-      this.presentAlert("Debes añadir productos un número de tracking para continuar")
-      return false
-    }
+    this.products[index].product = product.product
+    this.products[index].price = product.price
+    this.products[index].fileType = product.fileType
+    this.products[index].image = product.image
 
-    else if(this.address == "" || this.address == null){
-      this.presentAlert("Debes añadir una dirección para continuar")
-      return false
-    }
-
-    return true
-
+    //this.calculateProductTotal()
   }
 
-  async presentAlert(message, success = false) {
-    const alert = await this.alertController.create({
-      message: message,
-      buttons: [ 
-        {
-          text: 'Ok!',
-          handler: () => {
-            if(success == true){
-              this.goToShipping()
-            }
-          }
-        }
-      ]
-    });
+  calculateProductTotal(){
+    this.total = 0
+    this.products.forEach(product => this.total += product.price)
 
-    await alert.present();
   }
 
   addProduct(product){
-    
+
     this.products.push(product)
     this.calculateProductTotal()
 
   }
 
-  updateProduct(product, index){
+  update(){
 
-    this.products[index].name = product.product ? product.product : product.name 
-    this.products[index].price = product.price
-    this.products[index].file_type = product.fileType
-    this.products[index].image = product.image
+    let headers = new HttpHeaders({
+      Authorization: "Bearer "+window.localStorage.getItem('token'),
+    });
 
-    this.calculateProductTotal()
+    this.presentLoading()
+
+    this.http.post(this.url+'/shipping/update', {shippingId: this.shippingId, recipientId: this.recipientId, packageId: this.selectedBox, tracking: this.tracking, description: this.description, pieces: this.pieces, length: this.length, height: this.height, width: this.width, weight: this.weight, address: this.address, resellerId: this.selectedReseller, dniPicture: this.base64ImageFront, dniPictureBack: this.base64ImageBack, products: this.products, department: this.selectedDepartment, province: this.selectedProvince, district: this.selectedDistrict, clientDNI: this.clientDni}, {headers})
+    .subscribe((res:any) => {
+        this.loadingDismiss()
+        if(res.success == true){
+
+          this.presentAlert(res.msg, true)
+            
+            
+        }else{
+
+          this.presentAlert(res.msg)
+
+        }
+
+    }, (errorResponse: HttpErrorResponse) => {
+      
+      this.loadingDismiss()
+
+      this.showValidationErrors(errorResponse)
+      
+
+    })
   }
 
-  deleteProduct(index){
+  async presentLoading() {
+    this.loading = await this.loadingController.create({});
+    this.loading.present();
+  }
 
-    this.products.splice(index, 1)
-    this.calculateProductTotal()
+  loadingDismiss(){
+    this.loading.dismiss()
   }
 
   showValidationErrors(errorResponse){
@@ -210,13 +419,23 @@ export class ShippingEditPage implements OnInit {
       }
   
     }
+
   }
 
-  goToShipping(){
-    this.router.navigateByUrl("/shipping")
-  }
+  async presentRecipientModal(){
+    
+    const modal = await this.modalController.create({
+      component: ClientAddPage,
+    });
+    await modal.present();
 
-  ngOnInit() {
+    let clientFromModal = await modal.onWillDismiss()
+
+    this.recipientId = clientFromModal.data.data.id
+    this.recipientQuery = clientFromModal.data.data.name+" "+clientFromModal.data.data.lastname
+    this.showRecipientList = false
+
   }
+  
 
 }

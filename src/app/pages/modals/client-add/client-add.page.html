@@ -1,0 +1,53 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()"><ion-icon name="close-outline"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <h2 class="text-center">Añadir cliente</h2>
+
+  <ion-item>
+    <ion-label position="floating">Nombre</ion-label>
+    <ion-input [(ngModel)]="name" type="text"></ion-input>
+  </ion-item>
+  <div *ngIf="errors != null">
+    <small *ngIf="errors.hasOwnProperty('name')" style="color: #e74c3c">{{ errors['name'][0] }}</small>
+  </div>
+
+  <ion-item>
+    <ion-label position="floating">Apellido</ion-label>
+    <ion-input [(ngModel)]="lastname" type="text"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Email</ion-label>
+    <ion-input [(ngModel)]="email" type="email"></ion-input>
+  </ion-item>
+  <div *ngIf="errors != null">
+    <small *ngIf="errors.hasOwnProperty('email')" style="color: #e74c3c">{{ errors['email'][0] }}</small>
+  </div>
+
+  <ion-item>
+    <ion-label position="floating">Teléfono</ion-label>
+    <ion-input [(ngModel)]="phone" type="number"></ion-input>
+  </ion-item>
+  <div *ngIf="errors != null">
+    <small *ngIf="errors.hasOwnProperty('phone')" style="color: #e74c3c">{{ errors['phone'][0] }}</small>
+  </div>
+
+  <ion-item>
+    <ion-label position="floating">Dirección</ion-label>
+    <ion-input [(ngModel)]="address" type="text"></ion-input>
+  </ion-item>
+  
+
+
+  <p class="text-center button-space">
+    <ion-button color="dark" (click)="store()"><span>Crear</span></ion-button>
+  </p>
+
+</ion-content>

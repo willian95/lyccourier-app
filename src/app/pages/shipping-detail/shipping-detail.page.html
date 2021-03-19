@@ -7,7 +7,14 @@
 </ion-header>
 
 <ion-content>
-  <h1 class="header">123123NZH8</h1>
+  <ion-grid>
+    <ion-row class="header">
+      <ion-col size="10"><h1>{{ shipping.tracking }}</h1></ion-col>
+      <ion-col size="2">
+        <ion-icon style="font-size: 30px; color: #fff; margin-top: 15px;" name="create-outline" (click)="goToEdit(shipping)"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <ion-card class="form-card">
   
@@ -46,7 +53,32 @@
         <ion-input readonly>{{ shipping.client.email }}</ion-input>
       </ion-item>
 
-     
+      <ion-item *ngIf="shipping.client.province">
+        <ion-label position="stacked">Provincia</ion-label>
+        <ion-input readonly>{{ shipping.client.province.name }}</ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="shipping.client.district">
+        <ion-label position="stacked">Distrito</ion-label>
+        <ion-input readonly>{{ shipping.client.district.name }}</ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="shipping.client.department">
+        <ion-label position="stacked">Departamento</ion-label>
+        <ion-input readonly>{{ shipping.client.department.name }}</ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="shipping.client.address">
+        <ion-label position="stacked">Dirección</ion-label>
+        <ion-input readonly>{{ shipping.client.address }}</ion-input>
+      </ion-item>
+
+   
+      <ion-item *ngIf="shipping.shipping_status_id <= 5">
+        <p style="text-align: center; width: 100%;">
+          <ion-button class="btn btn-dark" (click)="confirm()">Actualizar</ion-button>
+        </p>
+      </ion-item>
 
     </ion-card-content>
   </ion-card>

@@ -38,7 +38,7 @@ export class LoginPage implements OnInit {
     
     this.presentLoading()
 
-    this.http.post(this.url+"/login", {
+    this.http.post(this.url+"/login/functionary", {
       "email": this.email,
       "password":this.password,
     }).subscribe((res:any) =>{
@@ -108,12 +108,8 @@ export class LoginPage implements OnInit {
     localStorage.setItem("user", JSON.stringify(user))
   }
 
-  goToRegister(){
-    this.router.navigateByUrl("/register")
-  }
-
   goToShipping(){
-    this.router.navigateByUrl("/shipping")
+    this.router.navigateByUrl("/shippings")
   }
 
   togglePasswordInputType(){

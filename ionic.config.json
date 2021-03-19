@@ -1,5 +1,8 @@
 {
   "name": "lycCourierUser",
-  "integrations": {},
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
   "type": "angular"
 }

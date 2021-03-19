@@ -16,37 +16,34 @@ const routes: Routes = [
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   },
   {
-    path: 'register',
-    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
-  },
-  {
-    path: 'profile',
-    loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
-  },
-  {
-    path: 'shipping',
-    loadChildren: () => import('./pages/shipping/shipping.module').then( m => m.ShippingPageModule)
+    path: 'shippings',
+    loadChildren: () => import('./pages/shippings/shippings.module').then( m => m.ShippingsPageModule)
   },
   {
     path: 'shipping-detail',
     loadChildren: () => import('./pages/shipping-detail/shipping-detail.module').then( m => m.ShippingDetailPageModule)
   },
   {
-    path: 'shipping-create',
-    loadChildren: () => import('./pages/shipping-create/shipping-create.module').then( m => m.ShippingCreatePageModule)
+    path: 'qr-scanner',
+    loadChildren: () => import('./pages/qr-scanner/qr-scanner.module').then( m => m.QrScannerPageModule)
   },
   {
     path: 'product-add',
     loadChildren: () => import('./pages/modals/product-add/product-add.module').then( m => m.ProductAddPageModule)
   },
   {
+    path: 'shipping-create',
+    loadChildren: () => import('./pages/shipping-create/shipping-create.module').then( m => m.ShippingCreatePageModule)
+  },
+  {
     path: 'shipping-edit',
     loadChildren: () => import('./pages/shipping-edit/shipping-edit.module').then( m => m.ShippingEditPageModule)
   },
   {
-    path: 'forgot-password',
-    loadChildren: () => import('./pages/forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule)
+    path: 'client-add',
+    loadChildren: () => import('./pages/modals/client-add/client-add.module').then( m => m.ClientAddPageModule)
   },
+
 ];
 
 @NgModule({

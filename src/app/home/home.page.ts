@@ -24,7 +24,7 @@ export class HomePage {
   }
 
   goToShipping(){
-    this.router.navigateByUrl("/shipping")
+    this.router.navigateByUrl("/shippings")
   }
 
 

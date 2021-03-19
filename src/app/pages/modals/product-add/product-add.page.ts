@@ -1,6 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController, AlertController } from '@ionic/angular';
+import { ModalController, AlertController, ActionSheetController } from '@ionic/angular';
 import {DomSanitizer} from '@angular/platform-browser';
+import { PhotoService } from '../../../services/photo.service'
+
+import { Plugins, CameraResultType, Capacitor, FilesystemDirectory, CameraPhoto, CameraSource } from '@capacitor/core';
+const { Camera, Filesystem, Storage } = Plugins;
 
 @Component({
   selector: 'app-product-add',
@@ -19,28 +23,52 @@ export class ProductAddPage implements OnInit {
   base64Image:any
   fileType:any
   fileName:any
+
+  productImagePreview:any
+  productBase64Image:any
+  productFileName:any
   
 
-  constructor(public modalController: ModalController, private sanitizer:DomSanitizer, public alertController: AlertController) { }
+  constructor(public modalController: ModalController, private sanitizer:DomSanitizer, public alertController: AlertController, public photoService: PhotoService, private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
   }
 
   ionViewDidEnter(){
-    console.log("product", this.product)
+
     if(this.product){
       this.name = this.product.product ? this.product.product : this.product.name
       this.price = this.product.price
       this.imagePreview = this.product.image
       this.base64Image = this.product.image
+      this.productImagePreview = this.product.productImage
+      this.productBase64Image = this.product.productImage
       this.fileType = this.product.fileType ? this.product.fileType : this.product.file_type
     }
+  }
+
+  public async takePhoto() {
+    // Take a photo
+    const capturedPhoto = await Camera.getPhoto({
+      resultType: CameraResultType.Base64, 
+      source: CameraSource.Camera,
+      quality: 40 
+    });
+
+  
+    this.productImagePreview = 'data:image/jpeg;base64,' + capturedPhoto.base64String
+    this.productBase64Image = 'data:image/jpeg;base64,' + capturedPhoto.base64String
   }
 
   clickFileInput(){
 
     document.getElementById("add-file-input").click()
 
+  }
+
+  clickImageProductInput(){
+    this.presentActionSheet()
+    
   }
 
   showPreview(event) {
@@ -65,10 +93,46 @@ export class ProductAddPage implements OnInit {
 
   }
 
+  showProductPreview(event) {
+
+    let file: File = event.target.files[0];
+    
+    if(this.validateProductFile(file)){
+
+      let imageUrl = URL.createObjectURL(file);
+      var myReader: FileReader = new FileReader();
+
+      this.productImagePreview = this.sanitize(imageUrl)
+
+      myReader.onloadend = (e) => {
+        this.productBase64Image = myReader.result;
+      }
+      myReader.readAsDataURL(file);
+
+    }
+
+    
+
+  }
+
   validateFile(file){
     this.fileType = file['type'].split('/')[0]
 
     if(this.fileType == "image" || file["type"].indexOf("pdf") >= 0){
+      return true
+    }
+
+    this.base64Image = ""
+    this.imagePreview = ""
+
+    this.presentAlert("Debes subir una imagen o pdf")
+    return false
+  }
+
+  validateProductFile(file){
+    this.fileType = file['type'].split('/')[0]
+
+    if(this.fileType == "image"){
       return true
     }
 
@@ -126,6 +190,7 @@ export class ProductAddPage implements OnInit {
         "price": this.price,
         "fileType": this.fileType,
         "image": this.base64Image,
+        "productImage": this.productBase64Image,
         'isEdit': this.isEdit,
         "index": this.index
       }
@@ -136,6 +201,27 @@ export class ProductAddPage implements OnInit {
 
     }
 
+  }
+
+  async presentActionSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      buttons: [{
+        text: 'Cámara',
+        role: 'destructive',
+        icon: 'camera',
+        handler: () => {
+          this.takePhoto();
+        
+        }
+      }, {
+        text: 'Gallería',
+        icon: 'share',
+        handler: () => {
+          document.getElementById("add-product-file-input").click()
+        }
+      }]
+    });
+    await actionSheet.present();
   }
 
 }

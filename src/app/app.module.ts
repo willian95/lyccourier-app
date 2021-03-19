@@ -11,6 +11,8 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { HttpClientModule } from '@angular/common/http';
 
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -18,6 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     StatusBar,
     SplashScreen,
+    BarcodeScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
