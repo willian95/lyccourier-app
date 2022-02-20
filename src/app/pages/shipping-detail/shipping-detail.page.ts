@@ -31,6 +31,9 @@ export class ShippingDetailPage implements OnInit {
         this.shipping = this.router.getCurrentNavigation().extras.state.shipping;
         this.status = this.shipping.shipping_status
         this.setValues(this.shipping)
+
+        console.log(this.shipping)
+
       }
       
     });
@@ -47,8 +50,12 @@ export class ShippingDetailPage implements OnInit {
   }
 
   calculateProductTotal(){
-    this.total = 0
+
+    if(this.products){
+      this.total = 0
     this.products.forEach(product => this.total += product.price)
+    }
+    
 
   }
 

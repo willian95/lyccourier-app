@@ -22,18 +22,24 @@
       <h1 class="text-center">Status</h1>
 
       <ion-list>
-        <ion-item *ngFor="let status of shipping.shipping_histories?.slice()?.reverse(); let i = index">
-          <ion-label *ngIf="i== 0"><strong >{{ status.shipping_status.name }}</strong></ion-label>
-          <ion-label *ngIf="i > 0">{{ status.shipping_status.name }}</ion-label>
-          <label>{{ dateFormat(status.created_at) }}</label>
+        <ion-item>
+          <ion-label><strong >Actualmente: {{ shipping.shipping_status.name }}</strong></ion-label>
+          <label>{{ dateFormat(shipping.created_at) }}</label>
         </ion-item>
 
       </ion-list>
+      
+      <ion-row>
+        <ion-col> <ion-label style="font-weight: bolder; color: #27ae60;" *ngIf="status.id == '1'" >Miami  </ion-label><span *ngIf="status.id != 1">Miami</span></ion-col>
+        <ion-col> <ion-label style="font-weight: bolder; color: #27ae60;" *ngIf="status.id == '2'" >Transito </ion-label> <span *ngIf="status.id != 2">Transito</span></ion-col>
+        <ion-col> <ion-label style="font-weight: bolder; color: #27ae60;" *ngIf="status.id == '3'" >Aduana (Lima) </ion-label> <span *ngIf="status.id != 3">Aduana (Lima)</span></ion-col>
+        <ion-col> <ion-label style="font-weight: bolder; color: #27ae60;" *ngIf="status.id == '4'" >Delivery </ion-label><span *ngIf="status.id != 4">Delivery</span></ion-col>
+      </ion-row>
 
       <h1 class="text-center">Origen</h1>
       <ion-item>
         <ion-label position="stacked">Dirección</ion-label>
-        <ion-input readonly>LycCourier 8301 NW 66th St, Miami, FL 33166, EE. UU.</ion-input>
+        <ion-input readonly>Zoom Logistics 8301 NW 66th St, Miami, FL 33166, EE. UU.</ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Warehouse #</ion-label>
